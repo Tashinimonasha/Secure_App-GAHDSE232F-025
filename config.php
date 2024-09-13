@@ -1,9 +1,9 @@
 <?php
 // Database connection
 $host = 'localhost';
-$dbname = 'your_db';
-$user = 'your_db_user';
-$pass = 'your_db_password';
+$dbname = 'secure_app';
+$user = 'root';
+$pass = '';
 
 $db = new mysqli($host, $user, $pass, $dbname);
 
