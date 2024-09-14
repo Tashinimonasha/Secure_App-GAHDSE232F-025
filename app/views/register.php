@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -37,10 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <style>
         /* Your existing CSS here */
         /* General body style */
-body {
+ 
+ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #2c3e50; /* Dark blue background */
-    background-image: url('images/image1.jpg');
+    background-image: url('image2.jpg');
     color: #ecf0f1; /* Light text color */
     padding-top: 50px;
     display: flex;
@@ -49,7 +51,6 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
-    background-image: url()
 }
 
 /* Container styling */
