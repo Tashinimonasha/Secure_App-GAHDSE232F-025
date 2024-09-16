@@ -29,6 +29,10 @@
                 <input type="password" name="confirm_password" class="form-control" required>
             </div>
             <button type="submit" class="btn" name="register">Register</button>
+             <!-- Display error message in red under the button -->
+             <?php if (isset($error)) : ?>
+                <p class="error-message"><?= $error ?></p>
+            <?php endif; ?>
         </form>
         <p>Already have an account? <a href="login.php">Login here</a></p>
     </div>

@@ -18,11 +18,15 @@ class AuthController{
             return;
         }
 
-          // Check if email already exists
-          if ($this->userModel->emailExists($email)) {
-            echo "Email already exists.";
-            return;
-        }
+         // Check if email already exists
+    if ($this->userModel->emailExists($email)) {
+        // Set error message
+        $error = "Email already exists.";
+        // Include the register page again with the error message
+        include '../public/register.php';
+        return;
+    }
+
         // Validate password complexity
         if (!preg_match('/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/', $password)) {
             echo "Password must be at least 8 characters long, include at least one number, one uppercase letter, and one lowercase letter.";
@@ -30,7 +34,10 @@ class AuthController{
         }
 
         if ($password !== $confirmPassword) {
-          echo "Passwords do not match.";
+            // Set error message
+            $error = "Passwords do not match.";
+            // Include the register page again with the error message
+            include '../public/register.php';
             return;
         }
 
@@ -105,7 +112,10 @@ class AuthController{
             }
             exit();
         } else {
-            echo "Invalid email or password.";
+            // Set error message
+            $error = "Invalid email or password.";
+            // Render the login page again with error
+            include '../public/login.php';
         }
     }
 }

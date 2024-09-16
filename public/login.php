@@ -18,6 +18,10 @@
                 <input type="password" name="password" class="form-control" required>
             </div>
             <button type="submit" class="btn" name="login">Login</button>
+              <!-- Display error message in red under the button -->
+              <?php if (isset($error)) : ?>
+                <p class="error-message"><?= $error ?></p>
+            <?php endif; ?>
         </form>
         <p>Don't have an account? <a href="register.php">Register here</a></p>
     </div>
