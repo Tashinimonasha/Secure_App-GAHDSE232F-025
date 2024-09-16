@@ -34,3 +34,6 @@
     </div>
 </body>
 </html>
+<body class="register-page">
+    <!-- Register page content -->
+</body>

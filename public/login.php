@@ -23,3 +23,6 @@
     </div>
 </body>
 </html>
+<body class="login-page">
+    <!-- Login page content -->
+</body>
