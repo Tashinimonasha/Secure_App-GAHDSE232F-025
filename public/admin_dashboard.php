@@ -60,8 +60,6 @@ $users = $userModel->getAllUsers();
                 <?php endif; ?>
             </tbody>
         </table>
-
-        <a href="logout.php">Logout</a>
     </div>
 </body>
 </html>
