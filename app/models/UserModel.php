@@ -1,32 +1,41 @@
 <?php
+require_once '../config/database.php';  // Move up one directory from `app/models`
 
-require_once '../config/config.php'; // Database connection
 
 class UserModel {
+    private $pdo;
 
-    public function findByUsername($username) {
-        global $db;
-        $stmt = $db->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->bind_param("s", $username);
+    public function __construct() {
+        $this->pdo = Database::connect();
+    }
+
+    public function createUser($name, $email, $password, $salt, $role) {
+        $uuid = bin2hex(random_bytes(16));
+        $stmt = $this->pdo->prepare('INSERT INTO users (uuid, name, email, password, salt, role) VALUES (:uuid, :name, :email, :password, :salt, :role)');
+        $stmt->execute(['uuid' => $uuid, 'name' => $name, 'email' => $email, 'password' => $password, 'salt' => $salt, 'role' => $role]);
+        return $uuid;
+    }
+
+    public function getUserByEmail($email) {
+        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE email = :email');
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch();
+    }
+
+    public function logUserActivity($uuid) {
+        $stmt = $this->pdo->prepare('INSERT INTO activity_log (user_id, login_time) VALUES (:user_id, NOW())');
+        $stmt->execute(['user_id' => $uuid]);
+    }
+    public function emailExists($email) {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        return $stmt->fetchColumn() > 0;
+    }
+     // Fetch all users
+     public function getAllUsers() {
+        $stmt = $this->pdo->prepare("SELECT id, name, email, role FROM users");
         $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
-
-    public function create($username, $password) {
-        global $db;
-        $passwordData = $this->hashPassword($password);
-        $stmt = $db->prepare("INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $passwordData['hash'], $passwordData['salt']);
-        return $stmt->execute();
-    }
-
-    public function hashPassword($password) {
-        $salt = bin2hex(random_bytes(16)); // Salt generation
-        $hash = hash('sha256', $salt . $password . PEPPER); // Hash with salt and pepper
-        return ['hash' => $hash, 'salt' => $salt];
-    }
-
-    public function verifyPassword($password, $hash, $salt) {
-        return hash('sha256', $salt . $password . PEPPER) === $hash;
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
+
