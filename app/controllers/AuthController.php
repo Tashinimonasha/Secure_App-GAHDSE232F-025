@@ -91,31 +91,29 @@ class AuthController{
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
     }
-    public function login($email, $password) {
-        // Fetch the user by email
-        $user = $this->userModel->getUserByEmail($email);
-    
-        if ($user && $this->secureHash->verifyPassword($password, $user['password'], $user['salt'])) {
-            // Start a secure session
-            SessionManager::startSession();
-            $_SESSION['uuid'] = $user['uuid'];
-            $_SESSION['user_role'] = $user['role']; // Assuming 'role' is a column in your users table
-    
-            // Log the login activity
-            $this->userModel->logUserActivity($user['uuid']);
-            
-            // Redirect to the admin dashboard if user is an admin
-            if ($user['role'] === 'admin') {
-                header("Location: ../public/admin_dashboard.php");
-            } else {
-                echo "Welcome, $user[name]!";
-            }
-            exit();
-        } else {
-            // Set error message
-            $error = "Invalid email or password.";
-            // Render the login page again with error
-            include '../public/login.php';
-        }
+  
+public function login($email, $password) {
+    // Fetch the user by email
+    $user = $this->userModel->getUserByEmail($email);
+
+    if ($user && $this->secureHash->verifyPassword($password, $user['password'], $user['salt'])) {
+        // Start a secure session
+        SessionManager::startSession();
+        $_SESSION['uuid'] = $user['uuid'];
+        $_SESSION['user_role'] = $user['role'];
+        $_SESSION['user_name'] = $user['name']; // Store the user's name in the session
+
+        // Log the login activity
+        $this->userModel->logUserActivity($user['uuid']);
+
+        // Redirect to the welcome page
+        header("Location: ../public/welcome.php");
+        exit();
+    } else {
+        // Set error message
+        $error = "Invalid email or password.";
+        // Render the login page again with error
+        include '../public/login.php';
     }
+}
 }

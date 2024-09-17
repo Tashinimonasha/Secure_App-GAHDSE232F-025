@@ -170,11 +170,31 @@ p {
   border: 1px solid #34495e; /* Slight border to enhance definition */
 }
 
- 
-
 /* Style the error message in red */
 .error-message {
     color: red;
     margin-top: 10px;
     font-weight: bold;
 }
+ /* Password strength meter */
+ .strength-meter {
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.strength-meter div {
+    height: 100%;
+    width: 0%;
+    background-color: red;
+    border-radius: 5px;
+    transition: width 0.3s;
+}
+
+.strength-text {
+    font-size: 14px;
+    color: #ecf0f1;
+    margin-top: 5px;
+}
+ 
