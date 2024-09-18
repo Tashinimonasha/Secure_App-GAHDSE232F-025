@@ -92,28 +92,34 @@ class AuthController{
         }
     }
   
-public function login($email, $password) {
-    // Fetch the user by email
-    $user = $this->userModel->getUserByEmail($email);
-
-    if ($user && $this->secureHash->verifyPassword($password, $user['password'], $user['salt'])) {
-        // Start a secure session
-        SessionManager::startSession();
-        $_SESSION['uuid'] = $user['uuid'];
-        $_SESSION['user_role'] = $user['role'];
-        $_SESSION['user_name'] = $user['name']; // Store the user's name in the session
-
-        // Log the login activity
-        $this->userModel->logUserActivity($user['uuid']);
-
-        // Redirect to the welcome page
-        header("Location: ../public/welcome.php");
-        exit();
-    } else {
-        // Set error message
-        $error = "Invalid email or password.";
-        // Render the login page again with error
-        include '../public/login.php';
+    public function login($email, $password) {
+        // Fetch the user by email
+        $user = $this->userModel->getUserByEmail($email);
+    
+        if ($user && $this->secureHash->verifyPassword($password, $user['password'], $user['salt'])) {
+            // Start a secure session
+            SessionManager::startSession();
+            $_SESSION['uuid'] = $user['uuid'];
+            $_SESSION['user_role'] = $user['role'];
+            $_SESSION['user_name'] = $user['name']; // Store the user's name in the session
+    
+            // Log the login activity
+            $this->userModel->logUserActivity($user['uuid']);
+    
+            // Check user role and redirect accordingly
+            if ($user['role'] === 'admin') {
+                // Redirect admin users to the admin dashboard
+                header("Location: ../public/admin_dashboard.php");
+            } else {
+                // Redirect regular users to the welcome page
+                header("Location: ../public/welcome.php");
+            }
+            exit();
+        } else {
+            // Set error message
+            $error = "Invalid email or password.";
+            // Render the login page again with error
+            include '../public/login.php';
+        }
     }
-}
 }
