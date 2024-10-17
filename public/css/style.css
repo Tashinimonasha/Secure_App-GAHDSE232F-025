@@ -198,3 +198,40 @@ p {
     margin-top: 5px;
 }
  
+.btn-delete {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.btn-update {
+  background-color: blue;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.btn-grant {
+  background-color: #007bff; /* Default color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-grant.access-granted {
+  background-color: #28a745; /* Green color for granted access */
+}
+
+.btn-grant:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.btn-grant.access-granted:hover {
+  background-color: #218838; /* Darker green on hover for granted access */
+}
+

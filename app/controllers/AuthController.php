@@ -96,30 +96,42 @@ class AuthController{
         // Fetch the user by email
         $user = $this->userModel->getUserByEmail($email);
     
-        if ($user && $this->secureHash->verifyPassword($password, $user['password'], $user['salt'])) {
-            // Start a secure session
-            SessionManager::startSession();
-            $_SESSION['uuid'] = $user['uuid'];
-            $_SESSION['user_role'] = $user['role'];
-            $_SESSION['user_name'] = $user['name']; // Store the user's name in the session
-    
-            // Log the login activity
-            $this->userModel->logUserActivity($user['uuid']);
-    
-            // Check user role and redirect accordingly
-            if ($user['role'] === 'admin') {
-                // Redirect admin users to the admin dashboard
-                header("Location: ../public/admin_dashboard.php");
-            } else {
-                // Redirect regular users to the welcome page
-                header("Location: ../public/welcome.php");
+        if ($user) {
+            // Check if access is granted
+            if (!$user['access_grant'] && $user['role']=='admin') {
+                $error = "You do not have access to the system Please contact administrator for access.";
+                // Render the login page again with the error message
+                include '../public/login.php';
+                return; // Exit the function to avoid further processing
             }
-            exit();
-        } else {
-            // Set error message
-            $error = "Invalid email or password.";
-            // Render the login page again with error
-            include '../public/login.php';
+    
+            // Verify the password
+            if ($this->secureHash->verifyPassword($password, $user['password'], $user['salt'])) {
+                // Start a secure session
+                SessionManager::startSession();
+                $_SESSION['uuid'] = $user['uuid'];
+                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['user_name'] = $user['name']; // Store the user's name in the session
+    
+                // Log the login activity
+                $this->userModel->logUserActivity($user['uuid']);
+    
+                // Check user role and redirect accordingly
+                if ($user['role'] === 'admin') {
+                    // Redirect admin users to the admin dashboard
+                    header("Location: ../public/admin_dashboard.php");
+                } else {
+                    // Redirect regular users to the welcome page
+                    header("Location: ../public/welcome.php");
+                }
+                exit();
+            }
         }
+        
+        // Set error message for invalid credentials
+        $error = "Invalid email or password.";
+        // Render the login page again with error
+        include '../public/login.php';
     }
+    
 }
